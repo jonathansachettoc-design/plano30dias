@@ -1,0 +1,1415 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Plano 30 Dias — Jonathan Sachetto</title>
+<link href="https://fonts.googleapis.com/css2?family=Space+Mono:ital,wght@0,400;0,700;1,400&family=Syne:wght@400;600;700;800&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #0a0a0f;
+    --surface: #12121a;
+    --surface2: #1a1a26;
+    --border: #2a2a3e;
+    --accent: #ff3d6e;
+    --accent2: #7b5ea7;
+    --accent3: #00d4aa;
+    --text: #e8e8f0;
+    --muted: #666680;
+    --w1: #ff3d6e;
+    --w2: #f59e0b;
+    --w3: #00d4aa;
+    --w4: #7b5ea7;
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  html { scroll-behavior: smooth; }
+
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: 'Syne', sans-serif;
+    overflow-x: hidden;
+    cursor: none;
+  }
+
+  /* CUSTOM CURSOR */
+  .cursor {
+    width: 12px; height: 12px;
+    background: var(--accent);
+    border-radius: 50%;
+    position: fixed;
+    top: 0; left: 0;
+    pointer-events: none;
+    z-index: 9999;
+    transition: transform 0.1s ease, background 0.2s;
+    mix-blend-mode: difference;
+  }
+  .cursor-ring {
+    width: 40px; height: 40px;
+    border: 1px solid rgba(255,61,110,0.4);
+    border-radius: 50%;
+    position: fixed;
+    top: 0; left: 0;
+    pointer-events: none;
+    z-index: 9998;
+    transition: all 0.15s ease;
+  }
+
+  /* NOISE OVERLAY */
+  body::before {
+    content: '';
+    position: fixed;
+    inset: 0;
+    background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='0.03'/%3E%3C/svg%3E");
+    pointer-events: none;
+    z-index: 1000;
+    opacity: 0.4;
+  }
+
+  /* SCROLLBAR */
+  ::-webkit-scrollbar { width: 3px; }
+  ::-webkit-scrollbar-track { background: var(--bg); }
+  ::-webkit-scrollbar-thumb { background: var(--accent); }
+
+  /* NAV */
+  nav {
+    position: fixed;
+    top: 0; left: 0; right: 0;
+    z-index: 100;
+    padding: 20px 40px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    background: linear-gradient(to bottom, rgba(10,10,15,0.95), transparent);
+    backdrop-filter: blur(8px);
+  }
+
+  .nav-logo {
+    font-family: 'Space Mono', monospace;
+    font-size: 13px;
+    color: var(--accent);
+    letter-spacing: 0.1em;
+  }
+
+  .nav-links {
+    display: flex;
+    gap: 32px;
+    list-style: none;
+  }
+
+  .nav-links a {
+    font-size: 12px;
+    font-weight: 600;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--muted);
+    text-decoration: none;
+    transition: color 0.2s;
+  }
+
+  .nav-links a:hover { color: var(--text); }
+
+  /* HERO */
+  .hero {
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    padding: 120px 80px 80px;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .hero-grid {
+    position: absolute;
+    inset: 0;
+    background-image:
+      linear-gradient(rgba(255,61,110,0.03) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(255,61,110,0.03) 1px, transparent 1px);
+    background-size: 60px 60px;
+    animation: gridMove 20s linear infinite;
+  }
+
+  @keyframes gridMove {
+    0% { transform: translate(0, 0); }
+    100% { transform: translate(60px, 60px); }
+  }
+
+  .hero-glow {
+    position: absolute;
+    width: 600px;
+    height: 600px;
+    background: radial-gradient(circle, rgba(255,61,110,0.08) 0%, transparent 70%);
+    top: -100px;
+    right: -100px;
+    animation: pulse 6s ease-in-out infinite;
+  }
+
+  .hero-glow2 {
+    position: absolute;
+    width: 400px;
+    height: 400px;
+    background: radial-gradient(circle, rgba(123,94,167,0.06) 0%, transparent 70%);
+    bottom: 0;
+    left: 100px;
+    animation: pulse 8s ease-in-out infinite reverse;
+  }
+
+  @keyframes pulse {
+    0%, 100% { transform: scale(1); opacity: 1; }
+    50% { transform: scale(1.1); opacity: 0.7; }
+  }
+
+  .hero-tag {
+    font-family: 'Space Mono', monospace;
+    font-size: 12px;
+    color: var(--accent);
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    margin-bottom: 32px;
+    opacity: 0;
+    animation: fadeUp 0.8s ease 0.2s forwards;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+  }
+
+  .hero-tag::before {
+    content: '';
+    width: 40px;
+    height: 1px;
+    background: var(--accent);
+    display: inline-block;
+  }
+
+  .hero-title {
+    font-size: clamp(56px, 9vw, 120px);
+    font-weight: 800;
+    line-height: 0.9;
+    letter-spacing: -0.03em;
+    margin-bottom: 32px;
+    opacity: 0;
+    animation: fadeUp 0.8s ease 0.4s forwards;
+  }
+
+  .hero-title .line1 { color: var(--text); display: block; }
+  .hero-title .line2 {
+    display: block;
+    color: transparent;
+    -webkit-text-stroke: 1px rgba(255,255,255,0.15);
+  }
+  .hero-title .line3 {
+    display: block;
+    background: linear-gradient(135deg, var(--accent), var(--accent2));
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+  }
+
+  .hero-sub {
+    font-size: 18px;
+    color: var(--muted);
+    max-width: 500px;
+    line-height: 1.7;
+    margin-bottom: 60px;
+    opacity: 0;
+    animation: fadeUp 0.8s ease 0.6s forwards;
+  }
+
+  .hero-stats {
+    display: flex;
+    gap: 48px;
+    opacity: 0;
+    animation: fadeUp 0.8s ease 0.8s forwards;
+  }
+
+  .stat {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+  }
+
+  .stat-num {
+    font-size: 40px;
+    font-weight: 800;
+    color: var(--accent);
+    line-height: 1;
+  }
+
+  .stat-label {
+    font-size: 12px;
+    color: var(--muted);
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+  }
+
+  .hero-scroll {
+    position: absolute;
+    bottom: 40px;
+    left: 80px;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    font-family: 'Space Mono', monospace;
+    font-size: 11px;
+    color: var(--muted);
+    letter-spacing: 0.1em;
+    animation: fadeUp 0.8s ease 1.2s both;
+  }
+
+  .scroll-line {
+    width: 60px;
+    height: 1px;
+    background: var(--border);
+    position: relative;
+    overflow: hidden;
+  }
+
+  .scroll-line::after {
+    content: '';
+    position: absolute;
+    left: -100%;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    background: var(--accent);
+    animation: scrollLine 2s ease-in-out infinite;
+  }
+
+  @keyframes scrollLine {
+    0% { left: -100%; }
+    100% { left: 100%; }
+  }
+
+  @keyframes fadeUp {
+    from { opacity: 0; transform: translateY(30px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+
+  /* SECTION BASE */
+  section {
+    padding: 100px 80px;
+    position: relative;
+  }
+
+  .section-label {
+    font-family: 'Space Mono', monospace;
+    font-size: 11px;
+    color: var(--accent);
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    margin-bottom: 16px;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+  }
+
+  .section-label::before {
+    content: '';
+    width: 24px;
+    height: 1px;
+    background: var(--accent);
+  }
+
+  .section-title {
+    font-size: clamp(32px, 5vw, 60px);
+    font-weight: 800;
+    line-height: 1.05;
+    letter-spacing: -0.02em;
+    margin-bottom: 60px;
+  }
+
+  /* STACK SECTION */
+  .stack-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 2px;
+    background: var(--border);
+    border: 1px solid var(--border);
+  }
+
+  .stack-item {
+    background: var(--surface);
+    padding: 32px;
+    transition: background 0.3s;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .stack-item::before {
+    content: '';
+    position: absolute;
+    top: 0; left: 0;
+    width: 3px;
+    height: 0;
+    background: var(--accent);
+    transition: height 0.3s ease;
+  }
+
+  .stack-item:hover::before { height: 100%; }
+  .stack-item:hover { background: var(--surface2); }
+
+  .stack-icon {
+    font-size: 28px;
+    margin-bottom: 16px;
+    display: block;
+  }
+
+  .stack-name {
+    font-size: 16px;
+    font-weight: 700;
+    margin-bottom: 6px;
+    color: var(--text);
+  }
+
+  .stack-use {
+    font-size: 13px;
+    color: var(--muted);
+    line-height: 1.6;
+    margin-bottom: 12px;
+  }
+
+  .stack-badge {
+    font-family: 'Space Mono', monospace;
+    font-size: 10px;
+    padding: 4px 10px;
+    border: 1px solid;
+    display: inline-block;
+    letter-spacing: 0.05em;
+  }
+
+  .badge-free { border-color: var(--accent3); color: var(--accent3); }
+  .badge-paid { border-color: var(--accent); color: var(--accent); }
+  .badge-cheap { border-color: var(--accent2); color: var(--accent2); }
+
+  /* WEEKS */
+  .weeks-container {
+    display: grid;
+    grid-template-columns: 280px 1fr;
+    gap: 2px;
+    background: var(--border);
+    min-height: 600px;
+  }
+
+  .week-tabs {
+    background: var(--surface);
+    display: flex;
+    flex-direction: column;
+  }
+
+  .week-tab {
+    padding: 32px;
+    cursor: pointer;
+    border-bottom: 1px solid var(--border);
+    transition: all 0.2s;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .week-tab::after {
+    content: '';
+    position: absolute;
+    right: 0; top: 0;
+    width: 3px;
+    height: 100%;
+    background: var(--w-color, var(--accent));
+    transform: scaleY(0);
+    transition: transform 0.3s;
+    transform-origin: bottom;
+  }
+
+  .week-tab.active::after { transform: scaleY(1); }
+  .week-tab.active { background: var(--surface2); }
+
+  .week-tab-num {
+    font-family: 'Space Mono', monospace;
+    font-size: 11px;
+    letter-spacing: 0.15em;
+    margin-bottom: 8px;
+    opacity: 0.5;
+  }
+
+  .week-tab-title {
+    font-size: 18px;
+    font-weight: 700;
+    margin-bottom: 4px;
+    color: var(--w-color, var(--text));
+  }
+
+  .week-tab-sub {
+    font-size: 12px;
+    color: var(--muted);
+    line-height: 1.5;
+  }
+
+  .week-content {
+    background: var(--surface);
+    padding: 48px;
+    display: none;
+  }
+
+  .week-content.active { display: block; }
+
+  .week-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    margin-bottom: 40px;
+    padding-bottom: 32px;
+    border-bottom: 1px solid var(--border);
+  }
+
+  .week-title {
+    font-size: 32px;
+    font-weight: 800;
+    color: var(--w-color, var(--accent));
+    margin-bottom: 8px;
+  }
+
+  .week-desc {
+    font-size: 15px;
+    color: var(--muted);
+    max-width: 420px;
+    line-height: 1.7;
+  }
+
+  .week-meta {
+    text-align: right;
+    font-family: 'Space Mono', monospace;
+    font-size: 11px;
+    color: var(--muted);
+    line-height: 2;
+  }
+
+  /* DAYS */
+  .days-list { display: flex; flex-direction: column; gap: 2px; }
+
+  .day-item {
+    display: grid;
+    grid-template-columns: 72px 1fr 1fr;
+    gap: 0;
+    background: var(--surface2);
+    overflow: hidden;
+    transition: transform 0.2s;
+    cursor: pointer;
+  }
+
+  .day-item:hover { transform: translateX(4px); }
+
+  .day-num {
+    background: var(--bg);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-family: 'Space Mono', monospace;
+    font-size: 12px;
+    font-weight: 700;
+    color: var(--w-color, var(--accent));
+    letter-spacing: 0.05em;
+    border-right: 1px solid var(--border);
+  }
+
+  .day-foco {
+    padding: 16px 20px;
+    border-right: 1px solid var(--border);
+  }
+
+  .day-foco-label {
+    font-size: 10px;
+    color: var(--muted);
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    margin-bottom: 4px;
+  }
+
+  .day-foco-text {
+    font-size: 14px;
+    font-weight: 600;
+    color: var(--text);
+  }
+
+  .day-entrega {
+    padding: 16px 20px;
+  }
+
+  .day-entrega-label {
+    font-size: 10px;
+    color: var(--muted);
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    margin-bottom: 4px;
+  }
+
+  .day-entrega-text {
+    font-size: 13px;
+    color: var(--muted);
+  }
+
+  /* CHECK SYSTEM */
+  .day-item.done .day-num {
+    background: var(--accent3);
+    color: var(--bg);
+  }
+
+  .day-item.done .day-foco-text {
+    text-decoration: line-through;
+    opacity: 0.5;
+  }
+
+  .day-item.done::before {
+    content: '✓';
+    position: absolute;
+  }
+
+  .week-progress {
+    margin-top: 32px;
+    padding-top: 24px;
+    border-top: 1px solid var(--border);
+  }
+
+  .progress-label {
+    display: flex;
+    justify-content: space-between;
+    font-family: 'Space Mono', monospace;
+    font-size: 11px;
+    color: var(--muted);
+    margin-bottom: 10px;
+  }
+
+  .progress-bar {
+    height: 3px;
+    background: var(--border);
+    position: relative;
+    overflow: hidden;
+  }
+
+  .progress-fill {
+    position: absolute;
+    top: 0; left: 0;
+    height: 100%;
+    background: var(--w-color, var(--accent));
+    transition: width 0.5s ease;
+    width: 0%;
+  }
+
+  /* MINDSET SECTION */
+  .mindset-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 2px;
+    background: var(--border);
+  }
+
+  .mindset-card {
+    background: var(--surface);
+    padding: 48px;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .mindset-card.danger {
+    border-top: 3px solid #ff3d6e22;
+  }
+
+  .mindset-card.danger::before {
+    content: '✗';
+    position: absolute;
+    top: 32px; right: 32px;
+    font-size: 40px;
+    color: var(--accent);
+    opacity: 0.15;
+    font-weight: 900;
+  }
+
+  .mindset-card.good::before {
+    content: '✓';
+    position: absolute;
+    top: 32px; right: 32px;
+    font-size: 40px;
+    color: var(--accent3);
+    opacity: 0.15;
+    font-weight: 900;
+  }
+
+  .mindset-num {
+    font-family: 'Space Mono', monospace;
+    font-size: 11px;
+    color: var(--muted);
+    letter-spacing: 0.15em;
+    margin-bottom: 16px;
+  }
+
+  .mindset-title {
+    font-size: 22px;
+    font-weight: 700;
+    margin-bottom: 16px;
+    line-height: 1.2;
+  }
+
+  .mindset-card.danger .mindset-title { color: var(--accent); }
+  .mindset-card.good .mindset-title { color: var(--accent3); }
+
+  .mindset-body {
+    font-size: 15px;
+    color: var(--muted);
+    line-height: 1.8;
+  }
+
+  /* TERMINAL CALLOUT */
+  .terminal {
+    background: #0d0d12;
+    border: 1px solid var(--border);
+    border-radius: 0;
+    padding: 32px;
+    font-family: 'Space Mono', monospace;
+    font-size: 13px;
+    line-height: 2;
+    position: relative;
+    overflow: hidden;
+    margin: 40px 0;
+  }
+
+  .terminal::before {
+    content: '● ● ●';
+    position: absolute;
+    top: 12px; left: 16px;
+    font-size: 10px;
+    color: var(--border);
+    letter-spacing: 6px;
+  }
+
+  .terminal-content {
+    margin-top: 20px;
+  }
+
+  .t-prompt { color: var(--accent3); }
+  .t-cmd { color: var(--text); }
+  .t-out { color: var(--muted); }
+  .t-highlight { color: var(--accent); }
+  .t-cursor {
+    display: inline-block;
+    width: 8px;
+    height: 16px;
+    background: var(--accent);
+    animation: blink 1s step-end infinite;
+    vertical-align: middle;
+    margin-left: 2px;
+  }
+
+  @keyframes blink {
+    0%, 100% { opacity: 1; }
+    50% { opacity: 0; }
+  }
+
+  /* FINAL CTA */
+  .cta-section {
+    padding: 120px 80px;
+    text-align: center;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .cta-bg {
+    position: absolute;
+    inset: 0;
+    background:
+      radial-gradient(circle at 30% 50%, rgba(255,61,110,0.06) 0%, transparent 60%),
+      radial-gradient(circle at 70% 50%, rgba(123,94,167,0.06) 0%, transparent 60%);
+  }
+
+  .cta-label {
+    font-family: 'Space Mono', monospace;
+    font-size: 11px;
+    color: var(--accent);
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    margin-bottom: 24px;
+  }
+
+  .cta-title {
+    font-size: clamp(40px, 7vw, 90px);
+    font-weight: 800;
+    line-height: 1;
+    letter-spacing: -0.03em;
+    margin-bottom: 32px;
+  }
+
+  .cta-sub {
+    font-size: 18px;
+    color: var(--muted);
+    max-width: 500px;
+    margin: 0 auto 60px;
+    line-height: 1.7;
+  }
+
+  .cta-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 12px;
+    background: var(--accent);
+    color: var(--bg);
+    padding: 18px 40px;
+    font-family: 'Syne', sans-serif;
+    font-size: 14px;
+    font-weight: 700;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    border: none;
+    cursor: pointer;
+    transition: all 0.2s;
+    text-decoration: none;
+  }
+
+  .cta-btn:hover {
+    background: var(--text);
+    transform: translateY(-2px);
+  }
+
+  /* TOTAL PROGRESS COUNTER */
+  .total-tracker {
+    position: fixed;
+    bottom: 40px;
+    right: 40px;
+    z-index: 200;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    padding: 20px 28px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 8px;
+    backdrop-filter: blur(12px);
+  }
+
+  .tracker-ring {
+    position: relative;
+    width: 64px;
+    height: 64px;
+  }
+
+  .tracker-ring svg {
+    transform: rotate(-90deg);
+    position: absolute;
+  }
+
+  .tracker-num {
+    position: absolute;
+    inset: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-family: 'Space Mono', monospace;
+    font-size: 16px;
+    font-weight: 700;
+    color: var(--accent);
+  }
+
+  .tracker-label {
+    font-size: 10px;
+    color: var(--muted);
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+  }
+
+  /* FOOTER */
+  footer {
+    border-top: 1px solid var(--border);
+    padding: 40px 80px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    font-family: 'Space Mono', monospace;
+    font-size: 11px;
+    color: var(--muted);
+  }
+
+  /* RESPONSIVE */
+  @media (max-width: 768px) {
+    nav { padding: 20px; }
+    .hero { padding: 100px 24px 60px; }
+    section { padding: 60px 24px; }
+    .hero-stats { gap: 32px; }
+    .stack-grid { grid-template-columns: 1fr; }
+    .weeks-container { grid-template-columns: 1fr; }
+    .week-tabs { flex-direction: row; overflow-x: auto; }
+    .week-tab { min-width: 180px; border-bottom: none; border-right: 1px solid var(--border); }
+    .mindset-grid { grid-template-columns: 1fr; }
+    footer { flex-direction: column; gap: 16px; text-align: center; }
+    .total-tracker { bottom: 16px; right: 16px; }
+    .nav-links { display: none; }
+    .cta-section { padding: 80px 24px; }
+  }
+</style>
+</head>
+<body>
+
+<div class="cursor" id="cursor"></div>
+<div class="cursor-ring" id="cursorRing"></div>
+
+<!-- PROGRESS TRACKER -->
+<div class="total-tracker">
+  <div class="tracker-ring">
+    <svg width="64" height="64" viewBox="0 0 64 64">
+      <circle cx="32" cy="32" r="26" fill="none" stroke="#2a2a3e" stroke-width="3"/>
+      <circle cx="32" cy="32" r="26" fill="none" stroke="#ff3d6e" stroke-width="3"
+        stroke-dasharray="163.4" stroke-dashoffset="163.4"
+        id="progressCircle" stroke-linecap="round"
+        style="transition: stroke-dashoffset 0.5s ease"/>
+    </svg>
+    <div class="tracker-num" id="trackerNum">0</div>
+  </div>
+  <div class="tracker-label">dias / 30</div>
+</div>
+
+<!-- NAV -->
+<nav>
+  <div class="nav-logo">JS_PLAN_30D</div>
+  <ul class="nav-links">
+    <li><a href="#stack">Stack</a></li>
+    <li><a href="#semanas">Semanas</a></li>
+    <li><a href="#mindset">Mindset</a></li>
+    <li><a href="#futuro">Futuro</a></li>
+  </ul>
+</nav>
+
+<!-- HERO -->
+<section class="hero">
+  <div class="hero-grid"></div>
+  <div class="hero-glow"></div>
+  <div class="hero-glow2"></div>
+
+  <div class="hero-tag">Jonathan Sachetto · Março 2026</div>
+
+  <h1 class="hero-title">
+    <span class="line1">PLANO</span>
+    <span class="line2">30 DIAS</span>
+    <span class="line3">BUILDER</span>
+  </h1>
+
+  <p class="hero-sub">
+    De iniciante no terminal a criador de automações reais com Claude Code. 1 hora por dia. Projeto concreto. Zero tutorial hell.
+  </p>
+
+  <div class="hero-stats">
+    <div class="stat">
+      <span class="stat-num">30</span>
+      <span class="stat-label">dias</span>
+    </div>
+    <div class="stat">
+      <span class="stat-num">1h</span>
+      <span class="stat-label">por dia</span>
+    </div>
+    <div class="stat">
+      <span class="stat-num">4</span>
+      <span class="stat-label">semanas</span>
+    </div>
+    <div class="stat">
+      <span class="stat-num">∞</span>
+      <span class="stat-label">potencial</span>
+    </div>
+  </div>
+
+  <div class="hero-scroll">
+    <div class="scroll-line"></div>
+    scroll para explorar
+  </div>
+</section>
+
+<!-- STACK -->
+<section id="stack">
+  <div class="section-label">Seu Arsenal</div>
+  <h2 class="section-title">Stack Definitivo</h2>
+
+  <div class="stack-grid">
+    <div class="stack-item">
+      <span class="stack-icon">⚡</span>
+      <div class="stack-name">Claude Pro</div>
+      <div class="stack-use">Estratégia, raciocínio profundo, planejamento editorial. Você usa no chat, com calma.</div>
+      <span class="stack-badge badge-paid">~R$140/mês</span>
+    </div>
+    <div class="stack-item">
+      <span class="stack-icon">💻</span>
+      <div class="stack-name">Claude Code</div>
+      <div class="stack-use">Terminal. Você descreve o que quer construir. Ele constrói. Você direciona.</div>
+      <span class="stack-badge badge-free">Incluso no Pro</span>
+    </div>
+    <div class="stack-item">
+      <span class="stack-icon">🔬</span>
+      <div class="stack-name">Claude Haiku API</div>
+      <div class="stack-use">Para volume no ClawdBot e n8n. Geração em lote, legendas, variações.</div>
+      <span class="stack-badge badge-cheap">Centavos/chamada</span>
+    </div>
+    <div class="stack-item">
+      <span class="stack-icon">🔗</span>
+      <div class="stack-name">n8n</div>
+      <div class="stack-use">Orquestrar automações. Conectar tudo. O maestro do seu stack.</div>
+      <span class="stack-badge badge-free">Grátis (self-hosted)</span>
+    </div>
+    <div class="stack-item">
+      <span class="stack-icon">📝</span>
+      <div class="stack-name">VS Code</div>
+      <div class="stack-use">Editor de código. Onde você vai ver o que o Claude Code está construindo.</div>
+      <span class="stack-badge badge-free">Grátis</span>
+    </div>
+    <div class="stack-item">
+      <span class="stack-icon">🐙</span>
+      <div class="stack-name">GitHub</div>
+      <div class="stack-use">Salvar seu trabalho. Seu portfólio de builder. Prova do que você construiu.</div>
+      <span class="stack-badge badge-free">Grátis</span>
+    </div>
+  </div>
+
+  <div class="terminal">
+    <div class="terminal-content">
+      <div><span class="t-prompt">→</span> <span class="t-cmd">Sobre o Claude Max</span></div>
+      <div><span class="t-out">Não vale agora. Max faz sentido com projetos complexos rodando o dia inteiro.</span></div>
+      <div><span class="t-out">Para aprender e construir sua primeira automação, Pro é</span> <span class="t-highlight">mais que suficiente</span><span class="t-out">.</span></div>
+      <div><span class="t-out">Reavalie em 60 dias.</span> <span class="t-cursor"></span></div>
+    </div>
+  </div>
+</section>
+
+<!-- SEMANAS -->
+<section id="semanas" style="background: var(--surface);">
+  <div class="section-label">Plano Detalhado</div>
+  <h2 class="section-title">As 4 Semanas</h2>
+
+  <div class="weeks-container">
+    <div class="week-tabs">
+      <div class="week-tab active" data-week="1" style="--w-color: #ff3d6e" onclick="switchWeek(1)">
+        <div class="week-tab-num">SEMANA 01</div>
+        <div class="week-tab-title" style="color: #ff3d6e">Fundamentos</div>
+        <div class="week-tab-sub">Terminal sem medo + Claude Code instalado</div>
+      </div>
+      <div class="week-tab" data-week="2" style="--w-color: #f59e0b" onclick="switchWeek(2)">
+        <div class="week-tab-num">SEMANA 02</div>
+        <div class="week-tab-title" style="color: #f59e0b">Primeiros Projetos</div>
+        <div class="week-tab-sub">Primeiro script real funcionando</div>
+      </div>
+      <div class="week-tab" data-week="3" style="--w-color: #00d4aa" onclick="switchWeek(3)">
+        <div class="week-tab-num">SEMANA 03</div>
+        <div class="week-tab-title" style="color: #00d4aa">Automação Real</div>
+        <div class="week-tab-sub">Conectado ao mundo real</div>
+      </div>
+      <div class="week-tab" data-week="4" style="--w-color: #7b5ea7" onclick="switchWeek(4)">
+        <div class="week-tab-num">SEMANA 04</div>
+        <div class="week-tab-title" style="color: #7b5ea7">Produto</div>
+        <div class="week-tab-sub">Transformar em diferencial</div>
+      </div>
+    </div>
+
+    <!-- WEEK 1 -->
+    <div class="week-content active" id="week-1" style="--w-color: #ff3d6e">
+      <div class="week-header">
+        <div>
+          <div class="week-title">Fundamentos</div>
+          <div class="week-desc">Você não vai construir nada essa semana. Vai entender o terreno. Parece lento — é o mais importante do plano.</div>
+        </div>
+        <div class="week-meta">
+          <div>7 dias</div>
+          <div>1h/dia</div>
+          <div style="color: #ff3d6e">Dias 1–7</div>
+        </div>
+      </div>
+      <div class="days-list" id="days-1">
+        <div class="day-item" data-day="1" onclick="toggleDay(this)">
+          <div class="day-num">01</div>
+          <div class="day-foco"><div class="day-foco-label">Foco</div><div class="day-foco-text">Terminal: navegação básica</div></div>
+          <div class="day-entrega"><div class="day-entrega-label">Entrega</div><div class="day-entrega-text">Criar pasta de projetos organizada</div></div>
+        </div>
+        <div class="day-item" data-day="2" onclick="toggleDay(this)">
+          <div class="day-num">02</div>
+          <div class="day-foco"><div class="day-foco-label">Foco</div><div class="day-foco-text">Terminal: criar e editar arquivos</div></div>
+          <div class="day-entrega"><div class="day-entrega-label">Entrega</div><div class="day-entrega-text">Primeiro arquivo .txt via terminal</div></div>
+        </div>
+        <div class="day-item" data-day="3" onclick="toggleDay(this)">
+          <div class="day-num">03</div>
+          <div class="day-foco"><div class="day-foco-label">Foco</div><div class="day-foco-text">Instalar Node.js e npm</div></div>
+          <div class="day-entrega"><div class="day-entrega-label">Entrega</div><div class="day-entrega-text">node --version funcionando</div></div>
+        </div>
+        <div class="day-item" data-day="4" onclick="toggleDay(this)">
+          <div class="day-num">04</div>
+          <div class="day-foco"><div class="day-foco-label">Foco</div><div class="day-foco-text">Instalar Claude Code</div></div>
+          <div class="day-entrega"><div class="day-entrega-label">Entrega</div><div class="day-entrega-text">Claude Code abrindo no terminal</div></div>
+        </div>
+        <div class="day-item" data-day="5" onclick="toggleDay(this)">
+          <div class="day-num">05</div>
+          <div class="day-foco"><div class="day-foco-label">Foco</div><div class="day-foco-text">Primeira conversa no Claude Code</div></div>
+          <div class="day-entrega"><div class="day-entrega-label">Entrega</div><div class="day-entrega-text">Claude Code explicando um arquivo</div></div>
+        </div>
+        <div class="day-item" data-day="6" onclick="toggleDay(this)">
+          <div class="day-num">06</div>
+          <div class="day-foco"><div class="day-foco-label">Foco</div><div class="day-foco-text">Instalar VS Code + extensões</div></div>
+          <div class="day-entrega"><div class="day-entrega-label">Entrega</div><div class="day-entrega-text">Ambiente visual configurado</div></div>
+        </div>
+        <div class="day-item" data-day="7" onclick="toggleDay(this)">
+          <div class="day-num">07</div>
+          <div class="day-foco"><div class="day-foco-label">Foco</div><div class="day-foco-text">Review + criar conta no GitHub</div></div>
+          <div class="day-entrega"><div class="day-entrega-label">Entrega</div><div class="day-entrega-text">Primeiro repositório publicado</div></div>
+        </div>
+      </div>
+      <div class="week-progress">
+        <div class="progress-label"><span>Progresso da semana</span><span id="prog-1">0/7</span></div>
+        <div class="progress-bar"><div class="progress-fill" id="fill-1"></div></div>
+      </div>
+    </div>
+
+    <!-- WEEK 2 -->
+    <div class="week-content" id="week-2" style="--w-color: #f59e0b">
+      <div class="week-header">
+        <div>
+          <div class="week-title">Primeiros Projetos</div>
+          <div class="week-desc">Script que gera legendas para Instagram a partir de um tema digitado. Simples, funcional, seu. Já resolve um problema real.</div>
+        </div>
+        <div class="week-meta">
+          <div>7 dias</div>
+          <div>1h/dia</div>
+          <div style="color: #f59e0b">Dias 8–14</div>
+        </div>
+      </div>
+      <div class="days-list" id="days-2">
+        <div class="day-item" data-day="8" onclick="toggleDay(this)">
+          <div class="day-num">08</div>
+          <div class="day-foco"><div class="day-foco-label">Foco</div><div class="day-foco-text">Como funciona JavaScript básico</div></div>
+          <div class="day-entrega"><div class="day-entrega-label">Entrega</div><div class="day-entrega-text">Entender variáveis e funções</div></div>
+        </div>
+        <div class="day-item" data-day="9" onclick="toggleDay(this)">
+          <div class="day-num">09</div>
+          <div class="day-foco"><div class="day-foco-label">Foco</div><div class="day-foco-text">Sua primeira chamada à API Claude</div></div>
+          <div class="day-entrega"><div class="day-entrega-label">Entrega</div><div class="day-entrega-text">Receber resposta da API no terminal</div></div>
+        </div>
+        <div class="day-item" data-day="10" onclick="toggleDay(this)">
+          <div class="day-num">10</div>
+          <div class="day-foco"><div class="day-foco-label">Foco</div><div class="day-foco-text">Ler input do usuário no terminal</div></div>
+          <div class="day-entrega"><div class="day-entrega-label">Entrega</div><div class="day-entrega-text">Script que pergunta e responde</div></div>
+        </div>
+        <div class="day-item" data-day="11" onclick="toggleDay(this)">
+          <div class="day-num">11</div>
+          <div class="day-foco"><div class="day-foco-label">Foco</div><div class="day-foco-text">Salvar output em arquivo .txt</div></div>
+          <div class="day-entrega"><div class="day-entrega-label">Entrega</div><div class="day-entrega-text">Legenda gerada salva em arquivo</div></div>
+        </div>
+        <div class="day-item" data-day="12" onclick="toggleDay(this)">
+          <div class="day-num">12</div>
+          <div class="day-foco"><div class="day-foco-label">Foco</div><div class="day-foco-text">Refinar o prompt do script</div></div>
+          <div class="day-entrega"><div class="day-entrega-label">Entrega</div><div class="day-entrega-text">Output no seu estilo editorial</div></div>
+        </div>
+        <div class="day-item" data-day="13" onclick="toggleDay(this)">
+          <div class="day-num">13</div>
+          <div class="day-foco"><div class="day-foco-label">Foco</div><div class="day-foco-text">Gerar múltiplos formatos</div></div>
+          <div class="day-entrega"><div class="day-entrega-label">Entrega</div><div class="day-entrega-text">Legenda + stories + roteiro de reels</div></div>
+        </div>
+        <div class="day-item" data-day="14" onclick="toggleDay(this)">
+          <div class="day-num">14</div>
+          <div class="day-foco"><div class="day-foco-label">Foco</div><div class="day-foco-text">Review + salvar no GitHub</div></div>
+          <div class="day-entrega"><div class="day-entrega-label">Entrega</div><div class="day-entrega-text">Primeiro projeto publicado</div></div>
+        </div>
+      </div>
+      <div class="week-progress">
+        <div class="progress-label"><span>Progresso da semana</span><span id="prog-2">0/7</span></div>
+        <div class="progress-bar"><div class="progress-fill" id="fill-2"></div></div>
+      </div>
+    </div>
+
+    <!-- WEEK 3 -->
+    <div class="week-content" id="week-3" style="--w-color: #00d4aa">
+      <div class="week-header">
+        <div>
+          <div class="week-title">Automação Real</div>
+          <div class="week-desc">Ler uma planilha com temas, gerar conteúdo para todos e organizar em pastas por data. Lote real, custo otimizado.</div>
+        </div>
+        <div class="week-meta">
+          <div>7 dias</div>
+          <div>1h/dia</div>
+          <div style="color: #00d4aa">Dias 15–21</div>
+        </div>
+      </div>
+      <div class="days-list" id="days-3">
+        <div class="day-item" data-day="15" onclick="toggleDay(this)">
+          <div class="day-num">15</div>
+          <div class="day-foco"><div class="day-foco-label">Foco</div><div class="day-foco-text">Ler arquivos CSV com JavaScript</div></div>
+          <div class="day-entrega"><div class="day-entrega-label">Entrega</div><div class="day-entrega-text">Script lê lista de temas de planilha</div></div>
+        </div>
+        <div class="day-item" data-day="16" onclick="toggleDay(this)">
+          <div class="day-num">16</div>
+          <div class="day-foco"><div class="day-foco-label">Foco</div><div class="day-foco-text">Loop: gerar conteúdo para cada tema</div></div>
+          <div class="day-entrega"><div class="day-entrega-label">Entrega</div><div class="day-entrega-text">Geração em lote funcionando</div></div>
+        </div>
+        <div class="day-item" data-day="17" onclick="toggleDay(this)">
+          <div class="day-num">17</div>
+          <div class="day-foco"><div class="day-foco-label">Foco</div><div class="day-foco-text">Organizar output em pastas por data</div></div>
+          <div class="day-entrega"><div class="day-entrega-label">Entrega</div><div class="day-entrega-text">Estrutura de pastas automática</div></div>
+        </div>
+        <div class="day-item" data-day="18" onclick="toggleDay(this)">
+          <div class="day-num">18</div>
+          <div class="day-foco"><div class="day-foco-label">Foco</div><div class="day-foco-text">Adicionar modelo Haiku (barato)</div></div>
+          <div class="day-entrega"><div class="day-entrega-label">Entrega</div><div class="day-entrega-text">Gasto de token reduzido no lote</div></div>
+        </div>
+        <div class="day-item" data-day="19" onclick="toggleDay(this)">
+          <div class="day-num">19</div>
+          <div class="day-foco"><div class="day-foco-label">Foco</div><div class="day-foco-text">Criar arquivo de configuração</div></div>
+          <div class="day-entrega"><div class="day-entrega-label">Entrega</div><div class="day-entrega-text">Troca cliente sem editar código</div></div>
+        </div>
+        <div class="day-item" data-day="20" onclick="toggleDay(this)">
+          <div class="day-num">20</div>
+          <div class="day-foco"><div class="day-foco-label">Foco</div><div class="day-foco-text">Testar com conteúdo real da agência</div></div>
+          <div class="day-entrega"><div class="day-entrega-label">Entrega</div><div class="day-entrega-text">Primeiro uso real em produção</div></div>
+        </div>
+        <div class="day-item" data-day="21" onclick="toggleDay(this)">
+          <div class="day-num">21</div>
+          <div class="day-foco"><div class="day-foco-label">Foco</div><div class="day-foco-text">Review + documentar no GitHub</div></div>
+          <div class="day-entrega"><div class="day-entrega-label">Entrega</div><div class="day-entrega-text">README explicando como usar</div></div>
+        </div>
+      </div>
+      <div class="week-progress">
+        <div class="progress-label"><span>Progresso da semana</span><span id="prog-3">0/7</span></div>
+        <div class="progress-bar"><div class="progress-fill" id="fill-3"></div></div>
+      </div>
+    </div>
+
+    <!-- WEEK 4 -->
+    <div class="week-content" id="week-4" style="--w-color: #7b5ea7">
+      <div class="week-header">
+        <div>
+          <div class="week-title">Produto e Posicionamento</div>
+          <div class="week-desc">Transformar em algo que você pode demonstrar, vender ou usar como diferencial. Aqui é onde a maioria para. Você vai além.</div>
+        </div>
+        <div class="week-meta">
+          <div>9 dias</div>
+          <div>1h/dia</div>
+          <div style="color: #7b5ea7">Dias 22–30</div>
+        </div>
+      </div>
+      <div class="days-list" id="days-4">
+        <div class="day-item" data-day="22" onclick="toggleDay(this)">
+          <div class="day-num">22</div>
+          <div class="day-foco"><div class="day-foco-label">Foco</div><div class="day-foco-text">Interface simples no terminal</div></div>
+          <div class="day-entrega"><div class="day-entrega-label">Entrega</div><div class="day-entrega-text">Menu interativo com opções</div></div>
+        </div>
+        <div class="day-item" data-day="23" onclick="toggleDay(this)">
+          <div class="day-num">23</div>
+          <div class="day-foco"><div class="day-foco-label">Foco</div><div class="day-foco-text">Versão para cliente imobiliário</div></div>
+          <div class="day-entrega"><div class="day-entrega-label">Entrega</div><div class="day-entrega-text">Prompt treinado para imóveis</div></div>
+        </div>
+        <div class="day-item" data-day="24" onclick="toggleDay(this)">
+          <div class="day-num">24</div>
+          <div class="day-foco"><div class="day-foco-label">Foco</div><div class="day-foco-text">Versão para agência (geral)</div></div>
+          <div class="day-entrega"><div class="day-entrega-label">Entrega</div><div class="day-entrega-text">Prompt genérico configurável</div></div>
+        </div>
+        <div class="day-item" data-day="25" onclick="toggleDay(this)">
+          <div class="day-num">25</div>
+          <div class="day-foco"><div class="day-foco-label">Foco</div><div class="day-foco-text">Gravar demo em vídeo (Loom)</div></div>
+          <div class="day-entrega"><div class="day-entrega-label">Entrega</div><div class="day-entrega-text">Demonstração da ferramenta gravada</div></div>
+        </div>
+        <div class="day-item" data-day="26" onclick="toggleDay(this)">
+          <div class="day-num">26</div>
+          <div class="day-foco"><div class="day-foco-label">Foco</div><div class="day-foco-text">Post no X sobre o projeto</div></div>
+          <div class="day-entrega"><div class="day-entrega-label">Entrega</div><div class="day-entrega-text">Conteúdo de autoridade publicado</div></div>
+        </div>
+        <div class="day-item" data-day="27" onclick="toggleDay(this)">
+          <div class="day-num">27</div>
+          <div class="day-foco"><div class="day-foco-label">Foco</div><div class="day-foco-text">Conectar ao n8n (introdução)</div></div>
+          <div class="day-entrega"><div class="day-entrega-label">Entrega</div><div class="day-entrega-text">Automação disparada por webhook</div></div>
+        </div>
+        <div class="day-item" data-day="28" onclick="toggleDay(this)">
+          <div class="day-num">28</div>
+          <div class="day-foco"><div class="day-foco-label">Foco</div><div class="day-foco-text">Testar com cliente real (beta)</div></div>
+          <div class="day-entrega"><div class="day-entrega-label">Entrega</div><div class="day-entrega-text">Feedback real coletado</div></div>
+        </div>
+        <div class="day-item" data-day="29" onclick="toggleDay(this)">
+          <div class="day-num">29</div>
+          <div class="day-foco"><div class="day-foco-label">Foco</div><div class="day-foco-text">Ajustes baseados no feedback</div></div>
+          <div class="day-entrega"><div class="day-entrega-label">Entrega</div><div class="day-entrega-text">Versão 1.0 estável</div></div>
+        </div>
+        <div class="day-item" data-day="30" onclick="toggleDay(this)">
+          <div class="day-num">30</div>
+          <div class="day-foco"><div class="day-foco-label">Foco</div><div class="day-foco-text">Review geral + próximos passos</div></div>
+          <div class="day-entrega"><div class="day-entrega-label">Entrega</div><div class="day-entrega-text">Roadmap dos próximos 30 dias</div></div>
+        </div>
+      </div>
+      <div class="week-progress">
+        <div class="progress-label"><span>Progresso da semana</span><span id="prog-4">0/9</span></div>
+        <div class="progress-bar"><div class="progress-fill" id="fill-4"></div></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- MINDSET -->
+<section id="mindset">
+  <div class="section-label">Regras do Jogo</div>
+  <h2 class="section-title">O que vai te derrubar<br>e como evitar</h2>
+
+  <div class="mindset-grid">
+    <div class="mindset-card danger">
+      <div class="mindset-num">ARMADILHA 01</div>
+      <div class="mindset-title">Tutorial Hell</div>
+      <div class="mindset-body">Você vai querer assistir curso de JavaScript, Python, Node antes de começar. Não faça isso. O Claude Code explica enquanto você constrói. Tutorial é procrastinação disfarçada de produtividade.</div>
+    </div>
+    <div class="mindset-card danger">
+      <div class="mindset-num">ARMADILHA 02</div>
+      <div class="mindset-title">Projeto Perfeito</div>
+      <div class="mindset-body">Você tem instinto de designer — vai querer que o código fique bonito e organizado. Semanas 1 e 2: não importa. Feio e funcionando vale mais que bonito e travado. Refatora depois.</div>
+    </div>
+    <div class="mindset-card danger">
+      <div class="mindset-num">ARMADILHA 03</div>
+      <div class="mindset-title">Pular Etapas</div>
+      <div class="mindset-body">É tentador pular a Semana 1 porque parece simples. Não pule. Um erro que você não entende no terminal vai te travar por dias. Os fundamentos pagam dividendos infinitos.</div>
+    </div>
+    <div class="mindset-card good">
+      <div class="mindset-num">COMBUSTÍVEL 01</div>
+      <div class="mindset-title">1 hora todo dia</div>
+      <div class="mindset-body">Consistência vence intensidade. Commit diário no GitHub — seu histórico de progresso visível. Fale com seu amigo semanalmente. Ele já passou por isso e pode te salvar horas.</div>
+    </div>
+    <div class="mindset-card good">
+      <div class="mindset-num">COMBUSTÍVEL 02</div>
+      <div class="mindset-title">Publica o que aprende</div>
+      <div class="mindset-body">Post semanal no X sobre o que construiu. Aprende quem ensina. Você vai construir autoridade enquanto aprende — não depois. Esse é o meta-produto do plano.</div>
+    </div>
+    <div class="mindset-card good">
+      <div class="mindset-num">COMBUSTÍVEL 03</div>
+      <div class="mindset-title">O prompt certo</div>
+      <div class="mindset-body">Errado: "Como faço um loop em JavaScript?" — Certo: "Preciso ler cada linha de um CSV e gerar um texto para cada uma. Como faço isso nesse arquivo que já tenho?" Contexto + objetivo = respostas 10x melhores.</div>
+    </div>
+  </div>
+</section>
+
+<!-- FUTURO -->
+<section id="futuro" style="background: var(--surface);">
+  <div class="section-label">Depois dos 30 dias</div>
+  <h2 class="section-title">Você vai ter construído</h2>
+
+  <div class="stack-grid" style="grid-template-columns: repeat(2, 1fr);">
+    <div class="stack-item">
+      <span class="stack-icon">🤖</span>
+      <div class="stack-name">Automação real funcionando</div>
+      <div class="stack-use">Resolve um problema do seu negócio. Gera conteúdo em lote a partir de planilha. Custo de API otimizado.</div>
+    </div>
+    <div class="stack-item">
+      <span class="stack-icon">🦁</span>
+      <div class="stack-name">Confiança no terminal</div>
+      <div class="stack-use">O terminal não é mais um monstro. É onde você constrói. Claude Code vira seu par de desenvolvimento.</div>
+    </div>
+    <div class="stack-item">
+      <span class="stack-icon">📂</span>
+      <div class="stack-name">Portfólio no GitHub</div>
+      <div class="stack-use">Prova concreta de que você é um builder. Não alguém que fala sobre IA — alguém que constrói com IA.</div>
+    </div>
+    <div class="stack-item">
+      <span class="stack-icon">🚀</span>
+      <div class="stack-name">Base para o próximo projeto</div>
+      <div class="stack-use">Chatbot de qualificação de leads via WhatsApp Business API + n8n. Acessível com a base que você vai ter.</div>
+    </div>
+  </div>
+</section>
+
+<!-- CTA -->
+<div class="cta-section">
+  <div class="cta-bg"></div>
+  <div class="cta-label">Dia 1 começa amanhã</div>
+  <h2 class="cta-title">Terminal aberto.<br>Clock running.</h2>
+  <p class="cta-sub">Antes de qualquer rede social. Antes do primeiro café. 1 hora. Dia 1.</p>
+</div>
+
+<!-- FOOTER -->
+<footer>
+  <div>PLANO_30D // JONATHAN_SACHETTO // 2026</div>
+  <div>Clique nos dias para marcar como concluído</div>
+  <div id="footer-count">0 / 30 concluídos</div>
+</footer>
+
+<script>
+  // CURSOR
+  const cursor = document.getElementById('cursor');
+  const ring = document.getElementById('cursorRing');
+  let mx = 0, my = 0, rx = 0, ry = 0;
+
+  document.addEventListener('mousemove', e => {
+    mx = e.clientX; my = e.clientY;
+    cursor.style.transform = `translate(${mx - 6}px, ${my - 6}px)`;
+  });
+
+  function animateRing() {
+    rx += (mx - rx - 20) * 0.12;
+    ry += (my - ry - 20) * 0.12;
+    ring.style.transform = `translate(${rx}px, ${ry}px)`;
+    requestAnimationFrame(animateRing);
+  }
+  animateRing();
+
+  // WEEK TABS
+  function switchWeek(num) {
+    document.querySelectorAll('.week-tab').forEach(t => t.classList.remove('active'));
+    document.querySelectorAll('.week-content').forEach(c => c.classList.remove('active'));
+    document.querySelector(`.week-tab[data-week="${num}"]`).classList.add('active');
+    document.getElementById(`week-${num}`).classList.add('active');
+  }
+
+  // DAY TOGGLE + PROGRESS
+  const weekDays = { 1: 7, 2: 7, 3: 7, 4: 9 };
+  const doneDays = new Set();
+
+  function getWeekForDay(day) {
+    if (day <= 7) return 1;
+    if (day <= 14) return 2;
+    if (day <= 21) return 3;
+    return 4;
+  }
+
+  function updateProgress() {
+    [1, 2, 3, 4].forEach(w => {
+      let weekStart = w === 1 ? 1 : w === 2 ? 8 : w === 3 ? 15 : 22;
+      let weekEnd = w === 1 ? 7 : w === 2 ? 14 : w === 3 ? 21 : 30;
+      let total = weekEnd - weekStart + 1;
+      let done = 0;
+      for (let d = weekStart; d <= weekEnd; d++) {
+        if (doneDays.has(d)) done++;
+      }
+      const pct = (done / total) * 100;
+      document.getElementById(`fill-${w}`).style.width = pct + '%';
+      document.getElementById(`prog-${w}`).textContent = `${done}/${total}`;
+    });
+
+    // Total tracker
+    const total = doneDays.size;
+    const pct = total / 30;
+    const circumference = 163.4;
+    const offset = circumference - (pct * circumference);
+    document.getElementById('progressCircle').style.strokeDashoffset = offset;
+    document.getElementById('trackerNum').textContent = total;
+    document.getElementById('footer-count').textContent = `${total} / 30 concluídos`;
+  }
+
+  function toggleDay(el) {
+    const day = parseInt(el.dataset.day);
+    if (doneDays.has(day)) {
+      doneDays.delete(day);
+      el.classList.remove('done');
+    } else {
+      doneDays.add(day);
+      el.classList.add('done');
+    }
+    updateProgress();
+  }
+
+  // INTERSECTION OBSERVER for fade-in
+  const observer = new IntersectionObserver((entries) => {
+    entries.forEach(e => {
+      if (e.isIntersecting) {
+        e.target.style.opacity = '1';
+        e.target.style.transform = 'translateY(0)';
+      }
+    });
+  }, { threshold: 0.1 });
+
+  document.querySelectorAll('.stack-item, .mindset-card, .day-item').forEach(el => {
+    el.style.opacity = '0';
+    el.style.transform = 'translateY(20px)';
+    el.style.transition = 'opacity 0.5s ease, transform 0.5s ease';
+    observer.observe(el);
+  });
+
+  updateProgress();
+</script>
+</body>
+</html>
